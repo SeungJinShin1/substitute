@@ -43,15 +43,6 @@ export default function Sidebar({ currentView, setView }) {
           ))}
         </div>
   
-        <div className="p-4 border-t border-gray-800">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-xs">교무</div>
-            <div>
-              <p className="text-sm font-bold">교무부장</p>
-              <p className="text-xs text-green-400">관리자 접속중</p>
-            </div>
-          </div>
-        </div>
       </div>
     );
   };

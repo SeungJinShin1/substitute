@@ -5,7 +5,7 @@ import RequestForm from './components/RequestForm';
 import AssignmentCenter from './components/AssignmentCenter';
 import SettingsView from './components/SettingsView';
 import { INITIAL_TEACHERS } from './utils/config';
-
+import './App.css';
 
 function App() {
   const [view, setView] = useState('dashboard');
@@ -13,12 +13,20 @@ function App() {
   const [assignments, setAssignments] = useState([]); 
   const [requestData, setRequestData] = useState(null);
   
+  // 교사 카운트 증가
   const updateTeacherCount = (teacherId, increment) => {
     setTeachers(prev => prev.map(t => 
       t.id === teacherId ? { ...t, count: t.count + increment } : t
     ));
     setAssignments(prev => [...prev, { date: new Date().toISOString(), teacherId }]);
     setView('dashboard');
+  };
+
+  // [신규 기능] 교사 삭제 함수
+  const deleteTeacher = (teacherId) => {
+    if (window.confirm("정말로 해당 교사 정보를 삭제하시겠습니까?")) {
+      setTeachers(prev => prev.filter(t => t.id !== teacherId));
+    }
   };
 
   return (
@@ -41,7 +49,11 @@ function App() {
         </header>
 
         {view === 'dashboard' && (
-            <Dashboard teachers={teachers} assignments={assignments} />
+            <Dashboard 
+              teachers={teachers} 
+              assignments={assignments} 
+              onDeleteTeacher={deleteTeacher} // 삭제 함수 전달
+            />
         )}
         {view === 'request' && (
             <RequestForm setRequestData={setRequestData} setView={setView} />

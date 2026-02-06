@@ -1,11 +1,10 @@
 // 학교 기본 정보
 export const SCHOOL_INFO = {
   NAME: "천안용암초등학교",
-  VERSION: "v2.0 (Security & Multimodal)",
+  VERSION: "v2.1 (Clean Start)",
 };
 
 // 환경 변수 로드 (Vite 방식)
-// .env 파일이 없어도 빌드가 깨지지 않도록 || "" 처리
 export const ENV_CONFIG = {
   GEMINI_KEY: import.meta.env.VITE_GEMINI_KEY || "", 
 };
@@ -20,15 +19,5 @@ export const SCHOOL_RULES = `
 2) 순서: 해당 학년 교과전담 -> 고학년 교과전담 순.
 `;
 
-// 초기 교사 데이터
-export const INITIAL_TEACHERS = [
-  { id: 't1', name: '교무부장', grade: '관리자', class: '기타', count: 0 },
-  { id: 't2', name: '1학년 1반', grade: '1학년', class: '1반', count: 1 },
-  { id: 't3', name: '1학년 2반', grade: '1학년', class: '2반', count: 1 },
-  { id: 't4', name: '2학년 1반', grade: '2학년', class: '1반', count: 2 },
-  { id: 't5', name: '5학년 2반', grade: '5학년', class: '2반', count: 12 },
-  { id: 't6', name: '6학년 2반', grade: '6학년', class: '2반', count: 5 },
-  { id: 't7', name: '교담1', grade: '교과전담', class: '과학', count: 4 },
-  { id: 't8', name: '교담2', grade: '교과전담', class: '영어', count: 3 },
-  { id: 't9', name: '학습도움반', grade: '특수', class: '도움반', count: 12 },
-];
+// [수정] 초기 데이터를 빈 배열로 변경하여 실제 학교 데이터만 등록되도록 함
+export const INITIAL_TEACHERS = [];
