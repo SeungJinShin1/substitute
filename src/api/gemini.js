@@ -23,7 +23,7 @@ export const callGeminiAPI = async (prompt, imageFile = null) => {
   if (!apiKey) throw new Error("API Key가 없습니다. .env 파일을 확인해주세요.");
   
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   try {
     let result;
