@@ -34,29 +34,31 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
     setAnalyzing(true);
     setPreviewData(null);
 
-    // [수정] 프롬프트 대폭 강화: 이름이 없을 경우 대처법 명시
+    // [강력 수정] 전담 교사 환각 방지 프롬프트
+    // 시간표 칸 안의 과목명(영어, 음악 등)을 보고 교사를 생성하지 않도록 엄격히 제한
     const prompt = `
-      이 이미지는 학교 시간표입니다. 
-      이미지에서 '교사(또는 학급) 정보'를 추출하여 JSON으로 반환하세요.
+      당신은 초등학교 시간표 분석 전문가입니다. 제공된 이미지에서 **'시간표의 주인' 단 1명**만 찾아서 JSON으로 반환하세요.
 
-      [필수 분석 규칙]
-      1. 시간표 상단에 '1학년 1반' 처럼 학급명만 있고 특정 교사 이름(예: 홍길동)이 없는 경우,
-         'name' 필드에 '1학년 1반 담임'이라고 자동으로 이름을 생성해서 넣으세요.
-      2. 'grade'에는 학년(예: 1학년), 'class'에는 반(예: 1반) 정보를 정확히 분리하세요.
-      3. 전담 교사의 경우 과목명을 'class'에 넣으세요.
+      [절대 규칙 - 위반 시 오답 처리]
+      1. **시간표 칸 안에 적힌 과목명(국어, 수학, 사회, 과학, 영어, 음악, 미술, 체육, 도덕, 실과, 창체 등)을 보고 절대로 새로운 교사를 생성하지 마십시오.** 이것들은 단지 수업 내용일 뿐입니다.
+      2. 시간표의 상단이나 제목에 적힌 **'학급명(예: 6학년 1반)'** 또는 **'담임 교사 이름'**을 확인하여, 그 학급의 담임 교사 1명 정보만 추출하세요.
+      3. 만약 '전담 교사 시간표'라고 명확히 제목이 붙어있지 않다면, 무조건 담임 교사 시간표로 간주합니다.
 
-      [JSON 반환 형식 예시]
+      [추출 예시]
+      - 이미지 제목이 '6학년 1반 시간표'인 경우 -> {"name": "6학년 1반 담임", "grade": "6학년", "class": "1반"} 만 추출.
+      - 시간표 안에 '영어', '음악' 수업이 있어도 '영어 전담', '음악 전담' 교사는 절대 만들지 않음.
+
+      [JSON 반환 형식]
       [
-        { "name": "1학년 1반 담임", "grade": "1학년", "class": "1반" },
-        { "name": "김과학", "grade": "교과전담", "class": "과학" }
+        { "name": "교사 이름 또는 O학년 O반 담임", "grade": "학년 정보", "class": "반 정보" }
       ]
       
-      주의: JSON 코드만 반환하고 마크다운 문법(Backticks)은 사용하지 마세요.
+      주의: 오직 JSON 코드만 반환하고, 마크다운 문법(Backticks)이나 다른 설명은 일절 포함하지 마세요.
     `;
 
     try {
       const textResponse = await callGeminiAPI(prompt, file);
-      // JSON 파싱 전처리 (마크다운 제거)
+      // JSON 파싱 전처리 (마크다운 ```json ... ``` 제거)
       const cleanedJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsedData = JSON.parse(cleanedJson);
       
@@ -71,7 +73,7 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
       setPreviewData(formattedData);
     } catch (error) {
       console.error("분석 에러:", error);
-      alert(`AI 분석 실패: ${error.message}\n이미지를 다시 확인하거나 잠시 후 시도해주세요.`);
+      alert(`AI 분석 실패: ${error.message}\n이미지가 너무 흐리거나 형식이 올바르지 않을 수 있습니다.`);
     } finally {
       setAnalyzing(false);
       if(fileInputRef.current) fileInputRef.current.value = '';
@@ -82,7 +84,6 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
     if (!previewData) return;
     if (window.confirm(`총 ${previewData.length}명의 교사 정보를 시스템에 등록하시겠습니까?\n기존 데이터에 추가됩니다.`)) {
       setTeachers(prev => {
-        // 기존 명단 뒤에 추가 (ID 충돌 방지 로직은 위에서 처리함)
         return [...prev, ...previewData];
       });
       setPreviewData(null);
@@ -91,7 +92,7 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in w-full">
       {/* 1. 학교 기본 정보 설정 */}
       <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
