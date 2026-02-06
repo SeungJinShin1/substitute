@@ -34,22 +34,29 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
     setAnalyzing(true);
     setPreviewData(null);
 
+    // [수정] 프롬프트 대폭 강화: 이름이 없을 경우 대처법 명시
     const prompt = `
       이 이미지는 학교 시간표입니다. 
-      이미지에서 '교사 이름', '담당 학년', '반 정보(또는 담당 과목)'를 추출하여 아래 JSON 형식으로 반환해주세요.
-      기존에 없던 선생님이라도 모두 추출하세요.
-      
-      [JSON 형식]
+      이미지에서 '교사(또는 학급) 정보'를 추출하여 JSON으로 반환하세요.
+
+      [필수 분석 규칙]
+      1. 시간표 상단에 '1학년 1반' 처럼 학급명만 있고 특정 교사 이름(예: 홍길동)이 없는 경우,
+         'name' 필드에 '1학년 1반 담임'이라고 자동으로 이름을 생성해서 넣으세요.
+      2. 'grade'에는 학년(예: 1학년), 'class'에는 반(예: 1반) 정보를 정확히 분리하세요.
+      3. 전담 교사의 경우 과목명을 'class'에 넣으세요.
+
+      [JSON 반환 형식 예시]
       [
-        { "name": "김교사", "grade": "6학년", "class": "1반" },
-        { "name": "이교담", "grade": "교과전담", "class": "영어" }
+        { "name": "1학년 1반 담임", "grade": "1학년", "class": "1반" },
+        { "name": "김과학", "grade": "교과전담", "class": "과학" }
       ]
       
-      주의: JSON 코드만 반환하고 마크다운 문법은 사용하지 마세요.
+      주의: JSON 코드만 반환하고 마크다운 문법(Backticks)은 사용하지 마세요.
     `;
 
     try {
       const textResponse = await callGeminiAPI(prompt, file);
+      // JSON 파싱 전처리 (마크다운 제거)
       const cleanedJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsedData = JSON.parse(cleanedJson);
       
@@ -63,7 +70,8 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
 
       setPreviewData(formattedData);
     } catch (error) {
-      alert(`분석 실패: ${error.message}`);
+      console.error("분석 에러:", error);
+      alert(`AI 분석 실패: ${error.message}\n이미지를 다시 확인하거나 잠시 후 시도해주세요.`);
     } finally {
       setAnalyzing(false);
       if(fileInputRef.current) fileInputRef.current.value = '';
@@ -72,17 +80,17 @@ export default function SettingsView({ teachers, setTeachers, setAssignments }) 
 
   const applyScheduleData = () => {
     if (!previewData) return;
-    if (window.confirm(`총 ${previewData.length}명의 교사 정보를 시스템에 등록하시겠습니까?\n기존 데이터는 유지되거나 업데이트됩니다.`)) {
+    if (window.confirm(`총 ${previewData.length}명의 교사 정보를 시스템에 등록하시겠습니까?\n기존 데이터에 추가됩니다.`)) {
       setTeachers(prev => {
-        return previewData;
+        // 기존 명단 뒤에 추가 (ID 충돌 방지 로직은 위에서 처리함)
+        return [...prev, ...previewData];
       });
       setPreviewData(null);
-      alert("교사 명단 및 시간표 정보가 업데이트되었습니다.");
+      alert("교사 명단이 성공적으로 등록되었습니다.");
     }
   };
 
   return (
-    // [수정] max-w-4xl mx-auto 제거 -> 전체 너비 사용
     <div className="space-y-8 animate-fade-in">
       {/* 1. 학교 기본 정보 설정 */}
       <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
