@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
-import SettingView from './components/SettingView';
+import Dashboard from './components/Dashboard';
 import RequestForm from './components/RequestForm';
 import AssignmentCenter from './components/AssignmentCenter';
+import SettingsView from './components/SettingsView';
+import { INITIAL_TEACHERS } from './utils/config';
 
 
-const App = () => {
+function App() {
   const [view, setView] = useState('dashboard');
   const [teachers, setTeachers] = useState(INITIAL_TEACHERS);
   const [assignments, setAssignments] = useState([]); 
@@ -38,13 +40,29 @@ const App = () => {
           </div>
         </header>
 
-        {view === 'dashboard' && <Dashboard teachers={teachers} assignments={assignments} />}
-        {view === 'request' && <RequestForm setRequestData={setRequestData} setView={setView} />}
-        {view === 'assignment' && <AssignmentCenter requestData={requestData} teachers={teachers} updateTeacherCount={updateTeacherCount} />}
-        {view === 'settings' && <SettingsView teachers={teachers} setTeachers={setTeachers} setAssignments={setAssignments} />}
+        {view === 'dashboard' && (
+            <Dashboard teachers={teachers} assignments={assignments} />
+        )}
+        {view === 'request' && (
+            <RequestForm setRequestData={setRequestData} setView={setView} />
+        )}
+        {view === 'assignment' && (
+            <AssignmentCenter 
+                requestData={requestData} 
+                teachers={teachers} 
+                updateTeacherCount={updateTeacherCount} 
+            />
+        )}
+        {view === 'settings' && (
+            <SettingsView 
+                teachers={teachers} 
+                setTeachers={setTeachers} 
+                setAssignments={setAssignments} 
+            />
+        )}
       </main>
     </div>
   );
-};
+}
 
 export default App;

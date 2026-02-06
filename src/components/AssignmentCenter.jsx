@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, AlertCircle } from 'lucide-react';
 import { callGeminiAPI } from '../api/gemini';
-import { ENV_CONFIG, SCHOOL_INFO, SCHOOL_RULES } from '../utils/config';
+import { SCHOOL_INFO, SCHOOL_RULES, ENV_CONFIG } from '../utils/config';
 
-const AssignmentCenter = ({ requestData, teachers, updateTeacherCount }) => {
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null);
-    const [error, setError] = useState(null);
+export default function AssignmentCenter({ requestData, teachers, updateTeacherCount }) {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
   
     useEffect(() => {
       if (requestData && !result && !loading) {
@@ -15,7 +15,7 @@ const AssignmentCenter = ({ requestData, teachers, updateTeacherCount }) => {
     }, [requestData]);
   
     const runAIAnalysis = async () => {
-      if (!ENV_CONFIG.GEMINI_KEY) {
+      if (!VITE_GEMINI_KEY) {
         setError("환경 변수(.env)에 API 키가 설정되지 않았습니다.");
         return;
       }

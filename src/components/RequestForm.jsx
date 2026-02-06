@@ -1,28 +1,31 @@
-const RequestForm = ({ setRequestData, setView }) => {
-    const [formData, setFormData] = useState({
-      date: new Date().toISOString().split('T')[0],
-      periods: [],
-      reason: '',
-      teacherName: ''
-    });
-  
-    const togglePeriod = (period) => {
-      setFormData(prev => ({
-        ...prev,
-        periods: prev.periods.includes(period) 
-          ? prev.periods.filter(p => p !== period) 
-          : [...prev.periods, period].sort()
-      }));
-    };
-  
-    const handleSubmit = () => {
-      if (!formData.teacherName || formData.periods.length === 0) {
-        alert("신청 교사와 보결 교시를 선택해주세요.");
-        return;
-      }
-      setRequestData(formData);
-      setView('assignment');
-    };
+import React, { useState } from 'react';
+import { Cpu } from 'lucide-react';
+
+export default function RequestForm({ setRequestData, setView }) {
+  const [formData, setFormData] = useState({
+    date: new Date().toISOString().split('T')[0],
+    periods: [],
+    reason: '',
+    teacherName: ''
+  });
+
+  const togglePeriod = (period) => {
+    setFormData(prev => ({
+      ...prev,
+      periods: prev.periods.includes(period) 
+        ? prev.periods.filter(p => p !== period) 
+        : [...prev.periods, period].sort()
+    }));
+  };
+
+  const handleSubmit = () => {
+    if (!formData.teacherName || formData.periods.length === 0) {
+      alert("신청 교사와 보결 교시를 선택해주세요.");
+      return;
+    }
+    setRequestData(formData);
+    setView('assignment');
+  };
   
     return (
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100">

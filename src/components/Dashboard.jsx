@@ -1,7 +1,17 @@
-const Dashboard = ({ teachers, assignments }) => {
-    const [showAll, setShowAll] = useState(false);
-    const sortedTeachers = [...teachers].sort((a, b) => b.count - a.count);
-    const visibleTeachers = showAll ? sortedTeachers : sortedTeachers.slice(0, 5);
+import React, { useState } from 'react';
+import { 
+  CalendarDays, 
+  CheckCircle2, 
+  Users, 
+  ChevronDown, 
+  ChevronUp 
+} from 'lucide-react';
+import { SCHOOL_INFO } from '../utils/config';
+
+export default function Dashboard({ teachers, assignments }) {
+  const [showAll, setShowAll] = useState(false);
+  const sortedTeachers = [...teachers].sort((a, b) => b.count - a.count);
+  const visibleTeachers = showAll ? sortedTeachers : sortedTeachers.slice(0, 5);
   
     return (
       <div className="space-y-6 animate-fade-in">

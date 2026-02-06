@@ -1,7 +1,22 @@
-const SettingsView = ({ teachers, setTeachers, setAssignments }) => {
-    const [analyzing, setAnalyzing] = useState(false);
-    const [previewData, setPreviewData] = useState(null); // 분석된 데이터 미리보기
-    const fileInputRef = useRef(null);
+import React, { useState, useRef } from 'react';
+import { 
+  School, 
+  Image as ImageIcon, 
+  Cpu, 
+  Upload, 
+  Loader2, 
+  CheckCircle2, 
+  X, 
+  AlertCircle, 
+  Trash2 
+} from 'lucide-react';
+import { callGeminiAPI } from '../api/gemini';
+import { SCHOOL_INFO } from '../utils/config';
+
+export default function SettingsView({ teachers, setTeachers, setAssignments }) {
+  const [analyzing, setAnalyzing] = useState(false);
+  const [previewData, setPreviewData] = useState(null);
+  const fileInputRef = useRef(null);
   
     const handleResetData = () => {
       if (window.confirm("정말로 모든 보결 누적 횟수와 배정 기록을 초기화하시겠습니까?")) {

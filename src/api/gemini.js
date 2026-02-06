@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ENV_CONFIG } from "../utils/config";
 
 const fileToGenerativePart = async (file) => {
     return new Promise((resolve) => {
@@ -16,7 +17,7 @@ const fileToGenerativePart = async (file) => {
   };
   
   const callGeminiAPI = async (prompt, imageFile = null) => {
-    const apiKey = ENV_CONFIG.GEMINI_KEY;
+    const apiKey = GEMINI.GEMINI_KEY;
     if (!apiKey) throw new Error("API Key가 없습니다. .env 파일을 확인해주세요.");
     
     const genAI = new GoogleGenerativeAI(apiKey);

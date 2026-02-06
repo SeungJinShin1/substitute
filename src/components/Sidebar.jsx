@@ -6,14 +6,15 @@ import {
   Settings, 
   Cpu 
 } from 'lucide-react';
+import { SCHOOL_INFO } from '../utils/config';
 
-const Sidebar = ({ currentView, setView }) => {
-    const menus = [
-      { id: 'dashboard', label: '종합 현황판', icon: LayoutDashboard },
-      { id: 'request', label: '보결 신청서', icon: FileText },
-      { id: 'assignment', label: '배당 센터 (AI)', icon: CheckCircle2 },
-      { id: 'settings', label: '시스템 설정', icon: Settings },
-    ];
+export default function Sidebar({ currentView, setView }) {
+  const menus = [
+    { id: 'dashboard', label: '종합 현황판', icon: LayoutDashboard },
+    { id: 'request', label: '보결 신청서', icon: FileText },
+    { id: 'assignment', label: '배당 센터 (AI)', icon: CheckCircle2 },
+    { id: 'settings', label: '시스템 설정', icon: Settings },
+  ];
   
     return (
       <div className="w-64 bg-[#1a1c2e] text-white flex flex-col h-screen fixed left-0 top-0 shadow-xl z-50">
