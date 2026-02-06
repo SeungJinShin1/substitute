@@ -7,7 +7,7 @@ export const SCHOOL_INFO = {
 // 환경 변수 로드 (Vite 방식)
 // .env 파일이 없어도 빌드가 깨지지 않도록 || "" 처리
 export const ENV_CONFIG = {
-  GEMINI_KEY: import.meta.env.VITE_GEMINI_API_KEY || "", 
+  GEMINI_KEY: import.meta.env.VITE_GEMINI_KEY || "", 
 };
 
 // 보결 규정
