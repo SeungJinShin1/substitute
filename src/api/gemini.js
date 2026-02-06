@@ -17,7 +17,7 @@ const fileToGenerativePart = async (file) => {
   };
   
   const callGeminiAPI = async (prompt, imageFile = null) => {
-    const apiKey = GEMINI.GEMINI_KEY;
+    const apiKey = VITE_GEMINI_KEY;
     if (!apiKey) throw new Error("API Key가 없습니다. .env 파일을 확인해주세요.");
     
     const genAI = new GoogleGenerativeAI(apiKey);
